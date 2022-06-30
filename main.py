@@ -7,15 +7,17 @@ import math
 import pandas as pd
 
 #escreve as correntes normalizadas no arquivo
-def write_standards_currents(listA, listB, listC):
+def write_standards_currents(listA, listB, listC, classification):
     f = open('standard_results.txt', 'w')
     listA = [str(x) for x in listA]
     listB = [str(x) for x in listB]
     listC = [str(x) for x in listC]
-    mat = np.array([listA, listB, listC])
+    
+    mat = np.array([listA, listB, listC,])
     mat = np.transpose(mat)
     print(mat)
     dataframe = pd.DataFrame(mat)
+    dataframe.insert(3, 'classe', classification)
     print('dataframe')
     print(dataframe)
     dataframe.to_csv('teste.csv')
@@ -111,4 +113,4 @@ stdIc = standard(col[2])
 print(stdIa)
 print(stdIb)
 print(stdIc)
-write_standards_currents(stdIa, stdIb, stdIc)
+write_standards_currents(stdIa, stdIb, stdIc, 'semCarga')
