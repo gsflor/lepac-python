@@ -45,7 +45,7 @@ def get_columns(title):
 
 def standard(list):
     list = [int(x) for x in list]
-    std = preprocessing.scale(list)
+    std = preprocessing.scale(list) #troca por minmax
     std = [truncate(x,2) for x in std]
     return std
 
@@ -95,7 +95,7 @@ def main():
 
 
 col = get_columns("DadosSimulacoes_09jun22a.csv")
-stdIa = standard(col[0])
+stdIa = standard(col[0]) #trocar por minmax
 stdIb = standard(col[1])
 stdIc = standard(col[2])
 print(stdIa)
