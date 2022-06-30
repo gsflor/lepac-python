@@ -2,11 +2,12 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
-from sklearn import preprocessing
+from sklearn.preprocessing import minmax_scale
 import math
 import pandas as pd
 
-def write_standards_currents(list):
+#escreve as correntes normalizadas no arquivo
+def write_standards_currents(listA, listB, listC):
     f = open('standard_results.txt', 'w')
     listA = [str(x) for x in listA]
     listB = [str(x) for x in listB]
@@ -15,10 +16,14 @@ def write_standards_currents(list):
     mat = np.transpose(mat)
     print(mat)
     dataframe = pd.DataFrame(mat)
+    print('dataframe')
+    print(dataframe)
     dataframe.to_csv('teste.csv')
     f.close()
     
-
+#retorna as colunas do arquivo
+#recebe: titulo do arquivo
+#retorna: uma matriz com as colunas
 def get_columns(title):
     file = open(title)
     csvreader = csv.reader(file)
@@ -42,14 +47,18 @@ def get_columns(title):
     file.close()
     return [ia, ib, ic]
 
-
+#normalizando valores
+#argumentos: 1 vetor de valores
+#retorno: vetor normalizado
 def standard(list):
     list = [int(x) for x in list]
-    std = preprocessing.scale(list) #troca por minmax
+    mat = np.array([list])
+    std = minmax_scale(list)
     std = [truncate(x,2) for x in std]
     return std
 
 
+#transformada rapida de fourier
 def fft_app(x):
     f = []
     f_len = []
@@ -72,6 +81,7 @@ def fft_app(x):
     return f, f_len, frequencies
 
 
+#trunca um número em 2 casas decimais
 def truncate(number, decimals=0):
     # Retorna valor truncado com x casas
     if not isinstance(decimals, int):
@@ -101,4 +111,4 @@ stdIc = standard(col[2])
 print(stdIa)
 print(stdIb)
 print(stdIc)
-write_standards_currents(stdIa)
+write_standards_currents(stdIa, stdIb, stdIc)
