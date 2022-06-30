@@ -11,10 +11,8 @@ def write_standards_currents(list):
     list = [str(x) for x in list]
     dataframe = pd.DataFrame(list)
     dataframe.to_csv('teste.csv')
-
-    #for()
-    #f.write(list)
     f.close()
+    
 
 def get_columns(title):
     file = open(title)
