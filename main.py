@@ -8,8 +8,13 @@ import pandas as pd
 
 def write_standards_currents(list):
     f = open('standard_results.txt', 'w')
-    list = [str(x) for x in list]
-    dataframe = pd.DataFrame(list)
+    listA = [str(x) for x in listA]
+    listB = [str(x) for x in listB]
+    listC = [str(x) for x in listC]
+    mat = np.array([listA, listB, listC])
+    mat = np.transpose(mat)
+    print(mat)
+    dataframe = pd.DataFrame(mat)
     dataframe.to_csv('teste.csv')
     f.close()
     
