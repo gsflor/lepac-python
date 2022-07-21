@@ -145,22 +145,6 @@ def knn_comparison(data, k):
     plt.title('K=' +str(k))
     plt.show()
 
-
-#col = get_columns("DadosSimulacoes_09jun22a.csv")
-#stdIa = standard(col[0]) #trocar por minmax
-#stdIb = standard(col[1])
-#stdIc = standard(col[2])
-#print(stdIa)
-#print(stdIb)
-#print(stdIc)
-
-#write_standards_currents(stdIa, stdIb, stdIc, 1)
-
-col = get_columns_no_amostras("DadosSimulacoes_09jun22b.csv")
-stdIa = standard(col[0])
-stdIb = standard(col[1])
-stdIc = standard(col[2])
-
 #write_standards_currents(stdIa, stdIb, stdIc, 2)
 
 col = get_columns_no_amostras("DadosSimulacoes_09jun225n.csv")
