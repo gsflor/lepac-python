@@ -1,14 +1,20 @@
 import csv
+import string
+from _csv import writer
+from mlxtend.plotting import plot_decision_regions
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import model_selection, neighbors, preprocessing
 from sklearn.datasets import load_iris
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import minmax_scale
 import math
 import pandas as pd
 
 #escreve as correntes normalizadas no arquivo
 def write_standards_currents(listA, listB, listC, classification):
-    f = open('standard_results.txt', 'w')
+    f = open('standard_results.txt', 'a')
     listA = [str(x) for x in listA]
     listB = [str(x) for x in listB]
     listC = [str(x) for x in listC]
@@ -20,7 +26,7 @@ def write_standards_currents(listA, listB, listC, classification):
     dataframe.insert(3, 'classe', classification)
     print('dataframe')
     print(dataframe)
-    dataframe.to_csv('teste.csv')
+    dataframe.to_csv('standard_results.txt', index=False)
     f.close()
     
 #retorna as colunas do arquivo
@@ -45,6 +51,29 @@ def get_columns(title):
         ia.append(rows[i][1])
         ib.append(rows[i][2])
         ic.append(rows[i][3])
+
+    file.close()
+    return [ia, ib, ic]
+
+def get_columns_no_amostras(title):
+    file = open(title)
+    csvreader = csv.reader(file)
+
+    header = next(csvreader)
+    print(header)
+
+    rows = []
+    ia = []
+    ib = []
+    ic = []
+
+    for row in csvreader:
+        rows.append(row)
+
+    for i in range(len(rows)):
+        ia.append(rows[i][0])
+        ib.append(rows[i][1])
+        ic.append(rows[i][2])
 
     file.close()
     return [ia, ib, ic]
@@ -105,12 +134,96 @@ def main():
     print(col);
     return 1;
 
+def knn_comparison(data, k):
+    x = data[['0', '1']].values
+    y = data['classe'].astype(int).values
+    knn = neighbors.KNeighborsClassifier(n_neighbors=k)
+    knn.fit(x,y)
+    plot_decision_regions(x,y,clf=knn)
+    plt.xlabel('ia')
+    plt.ylabel('ib')
+    plt.title('K=' +str(k))
+    plt.show()
 
-col = get_columns("DadosSimulacoes_09jun22a.csv")
-stdIa = standard(col[0]) #trocar por minmax
+
+#col = get_columns("DadosSimulacoes_09jun22a.csv")
+#stdIa = standard(col[0]) #trocar por minmax
+#stdIb = standard(col[1])
+#stdIc = standard(col[2])
+#print(stdIa)
+#print(stdIb)
+#print(stdIc)
+
+#write_standards_currents(stdIa, stdIb, stdIc, 1)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun22b.csv")
+stdIa = standard(col[0])
 stdIb = standard(col[1])
 stdIc = standard(col[2])
-print(stdIa)
-print(stdIb)
-print(stdIc)
-write_standards_currents(stdIa, stdIb, stdIc, 'semCarga')
+
+#write_standards_currents(stdIa, stdIb, stdIc, 2)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun225n.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+#write_standards_currents(stdIa, stdIb, stdIc, 3)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun2210n.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+write_standards_currents(stdIa, stdIb, stdIc, 4)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun2210ndesb.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+write_standards_currents(stdIa, stdIb, stdIc, 5)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun2215n.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+write_standards_currents(stdIa, stdIb, stdIc, 6)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun2215ndesb.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+write_standards_currents(stdIa, stdIb, stdIc, 7)
+
+col = get_columns_no_amostras("DadosSimulacoes_09jun2220n.csv")
+stdIa = standard(col[0])
+stdIb = standard(col[1])
+stdIc = standard(col[2])
+
+write_standards_currents(stdIa, stdIb, stdIc, 8)
+
+dataframe = pd.read_csv('draft2.txt')
+x_data = dataframe.drop(['Classe', 'RPM'], axis =1)
+y_data = dataframe['Classe']
+MinMaxScaler = preprocessing.MinMaxScaler()
+X_data_MinMax = MinMaxScaler.fit_transform(x_data)
+data = pd.DataFrame(X_data_MinMax, columns=['Ia', 'Ib', 'Ic'])
+
+
+print(data.head())
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(data, y_data,test_size=0.15, random_state = 0)
+X_train, val_inputs, y_train, val_outputs = model_selection.train_test_split(data, y_data, test_size=0.15, random_state = 0)
+
+for i in range(1,1000):
+    knn_clf = neighbors.KNeighborsClassifier(n_neighbors= 1)
+    knn_clf.fit(data,y_data)
+    ypred=knn_clf.predict(data)
+    scores =  accuracy_score(y_data, ypred)
+    print(i)
+    print(scores)
+
+##################
